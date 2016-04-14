@@ -17,11 +17,23 @@ int main( int argc, char *argv[] )  {
   else{
    printf("Type 'help' for more information\n");
    while(1){
-   	char command;
+   	char command[100];
    	scanf("%s",command);
+
+   	if(strcmp(command, "exit") == 0){
+   		exit(0);
+   	}
+   	else if(strcmp(command, "help") == 0){
+   		help();
+   	}
    	
    }
   }
 
   return 0;
+}
+
+void help(){
+	printf("HELP\n");
+	
 }
