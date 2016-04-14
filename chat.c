@@ -4,6 +4,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <sys/select.h>
+#include <netdb.h>
 
 int main( int argc, char *argv[] )  {
 
@@ -26,6 +27,24 @@ int main( int argc, char *argv[] )  {
    	else if(strcmp(command, "help") == 0){
    		help();
    	}
+   	else if(strcmp(command, "myip") == 0){
+   		myip();
+   	}
+   	else if(strcmp(command, "myport") == 0){
+   		myport();
+   	}
+   	else if(strcmp(command, "connect") == 0){
+   		connect();	
+   	}
+   	else if(strcmp(command, "list") == 0){
+   		list();
+   	}
+   	else if(strcmp(command, "terminate") == 0){
+   		terminater();
+   	}
+   	else if(strcmp(command, "send") == 0){
+   		send();
+   	}
    	
    }
   }
@@ -35,5 +54,29 @@ int main( int argc, char *argv[] )  {
 
 void help(){
 	printf("HELP\n");
+	
+}
+
+void myip(){
+
+}
+
+void myport(){
+
+}
+
+void connect(){
+
+}
+
+void list(){
+
+}
+
+void terminate(){
+
+}
+
+void send(){
 	
 }
