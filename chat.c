@@ -1,14 +1,27 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <sys/select.h>
 
 int main( int argc, char *argv[] )  {
 
-   printf("Program name %s\n", argv[0]);
- 
-   if( argc == 2 ) {
-      printf("The argument supplied is %s\n", argv[1]);
+  if(argc != 2){
+   printf("Please enter the listening port number\n");
+   exit(0);
+  }
+  else if(argc > 2){
+  	printf("Please enter only listening port number\n");
+  }
+  else{
+   printf("Type 'help' for more information\n");
+   while(1){
+   	char command;
+   	scanf("%s",command);
+   	
    }
-   else if( argc > 2 ) {
-      printf("Too many arguments supplied.\n");
-   }
-  
+  }
+
+  return 0;
 }
