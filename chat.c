@@ -5,6 +5,12 @@
 #include <sys/types.h>
 #include <sys/select.h>
 #include <netdb.h>
+#include <sys/ioctl.h>
+#include <netinet/in.h>
+#include <net/if.h>
+#include <unistd.h>
+#include <arpa/inet.h>
+#include <ifaddrs.h>
 
 void help(){
 	printf("connect <destination> <port no>:\t Establishes a new TCP connection to the specified <destination> at the specified < port no>.\n\n");
@@ -15,6 +21,22 @@ void help(){
 	printf("list:\t\t Display's a numbered list of all the connections your process is part of.\n\n");
 	printf("exit:\t\t Close all connections and terminate the process.\n\n");
 	
+}
+
+void myip(){
+	int n;
+    struct ifreq ifr;
+    char array[] = "en1";
+ 
+    n = socket(AF_INET, SOCK_DGRAM, 0);
+    //Type of address to retrieve - IPv4 IP address
+    ifr.ifr_addr.sa_family = AF_INET;
+    //Copy the interface name in the ifreq structure
+    strncpy(ifr.ifr_name , array , IFNAMSIZ - 1);
+    ioctl(n, SIOCGIFADDR, &ifr);
+    close(n);
+    //display result
+    printf("IP Address is %s\n" , inet_ntoa(( (struct sockaddr_in *)&ifr.ifr_addr )->sin_addr) );
 }
 
 
@@ -39,9 +61,9 @@ int main( int argc, char *argv[] )  {
    	else if(strcmp(command, "help") == 0){
    		help();
    	}
-   	// else if(strcmp(command, "myip") == 0){
-   	// 	myip();
-   	// }
+   	else if(strcmp(command, "myip") == 0){
+   		myip();
+   	}
    	// else if(strcmp(command, "myport") == 0){
    	// 	myport();
    	// }
