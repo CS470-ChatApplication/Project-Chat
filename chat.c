@@ -6,6 +6,18 @@
 #include <sys/select.h>
 #include <netdb.h>
 
+void help(){
+	printf("connect <destination> <port no>:\t Establishes a new TCP connection to the specified <destination> at the specified < port no>.\n\n");
+	printf("terminate <connection id>:\t\t Will terminate the connection listed under the specified number when LIST is used to display all connections.\n\n");
+	printf("send <connection id> <message>:\t\t Send the message to the host on the connection that is designated by the number when command “list” is used.\n\n");
+	printf("myip:\t\t Display's the IP address of the process.\n\n");
+	printf("myport:\t\t Display's the port on which the process is listening for incoming connections.\n\n");
+	printf("list:\t\t Display's a numbered list of all the connections your process is part of.\n\n");
+	printf("exit:\t\t Close all connections and terminate the process.\n\n");
+	
+}
+
+
 int main( int argc, char *argv[] )  {
 
   if(argc != 2){
@@ -27,24 +39,24 @@ int main( int argc, char *argv[] )  {
    	else if(strcmp(command, "help") == 0){
    		help();
    	}
-   	else if(strcmp(command, "myip") == 0){
-   		myip();
-   	}
-   	else if(strcmp(command, "myport") == 0){
-   		myport();
-   	}
-   	else if(strcmp(command, "connect") == 0){
-   		connect();	
-   	}
-   	else if(strcmp(command, "list") == 0){
-   		list();
-   	}
-   	else if(strcmp(command, "terminate") == 0){
-   		terminater();
-   	}
-   	else if(strcmp(command, "send") == 0){
-   		send();
-   	}
+   	// else if(strcmp(command, "myip") == 0){
+   	// 	myip();
+   	// }
+   	// else if(strcmp(command, "myport") == 0){
+   	// 	myport();
+   	// }
+   	// else if(strcmp(command, "connect") == 0){
+   	// 	connecting();	
+   	// }
+   	// else if(strcmp(command, "list") == 0){
+   	// 	list();
+   	// }
+   	// else if(strcmp(command, "terminate") == 0){
+   	// 	terminater();
+   	// }
+   	// else if(strcmp(command, "send") == 0){
+   	// 	sending();
+   	// }
    	
    }
   }
@@ -52,31 +64,3 @@ int main( int argc, char *argv[] )  {
   return 0;
 }
 
-void help(){
-	printf("HELP\n");
-	
-}
-
-void myip(){
-
-}
-
-void myport(){
-
-}
-
-void connect(){
-
-}
-
-void list(){
-
-}
-
-void terminate(){
-
-}
-
-void send(){
-	
-}
