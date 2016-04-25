@@ -28,7 +28,7 @@ void myip(){
     struct ifreq ifr;
     char array[] = "en1";
  
-    n = socket(AF_INET, SOCK_DGRAM, 0);
+    n = socket(AF_INET, SOCK_STREAM, 0);
     //Type of address to retrieve - IPv4 IP address
     ifr.ifr_addr.sa_family = AF_INET;
     //Copy the interface name in the ifreq structure
@@ -39,8 +39,17 @@ void myip(){
     printf("IP Address is %s\n" , inet_ntoa(( (struct sockaddr_in *)&ifr.ifr_addr )->sin_addr) );
 }
 
+void myport(){
+
+   struct sockaddr_in sin;
+socklen_t len = sizeof(sin);
+    printf("port number %d\n", ntohs(sin.sin_port));
+
+}
+
 
 int main( int argc, char *argv[] )  {
+  int n = 0;
 
   if(argc != 2){
    printf("Please enter the listening port number\n");
@@ -51,6 +60,16 @@ int main( int argc, char *argv[] )  {
   }
   else{
    printf("Type 'help' for more information\n");
+   
+   struct ifreq ifr;
+    char array[] = "en1";
+ 
+    n = socket(AF_INET, SOCK_STREAM, 0);
+    //Type of address to retrieve - IPv4 IP address
+    ifr.ifr_addr.sa_family = AF_INET;
+    //Copy the interface name in the ifreq structure
+    strncpy(ifr.ifr_name , array , IFNAMSIZ - 1);
+    ioctl(n, SIOCGIFADDR, &ifr);
    while(1){
    	char command[100];
    	scanf("%s",command);
@@ -64,9 +83,9 @@ int main( int argc, char *argv[] )  {
    	else if(strcmp(command, "myip") == 0){
    		myip();
    	}
-   	// else if(strcmp(command, "myport") == 0){
-   	// 	myport();
-   	// }
+   	else if(strcmp(command, "myport") == 0){
+   		myport();
+   	}
    	// else if(strcmp(command, "connect") == 0){
    	// 	connecting();	
    	// }
@@ -82,7 +101,7 @@ int main( int argc, char *argv[] )  {
    	
    }
   }
-
+  
   return 0;
 }
 
