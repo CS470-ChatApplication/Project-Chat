@@ -181,6 +181,7 @@ int main( int argc, char *argv[] )  {
   	printf("Please enter only listening port number\n");
   }
   else{
+    server();
    printf("Type 'help' for more information\n");
    // printf(argv[1] );
    
