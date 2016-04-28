@@ -16,7 +16,7 @@ void server(){
   int serverSocket,client_connected,len;
   struct sockaddr_in client_addr,server_addr;
   struct hostent *ptrh;
-  struct sockaddr_in sin;
+   
   int n=0; 
   char message[100],received[100];
 
@@ -25,7 +25,7 @@ void server(){
   memset((char*)&server_addr,0,sizeof(server_addr));
 
   server_addr.sin_family = AF_INET;
-  server_addr.sin_port = htons(sin.sin_port);
+  server_addr.sin_port = ntohs(51791);
 
   server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
@@ -73,7 +73,7 @@ void server(){
       }
   }
 
-  close(serverSocket); printf("\nServer Socket Closed !!\n");
+ // close(serverSocket); printf("\nServer Socket Closed !!\n");
 }
 
 void help(){
@@ -106,7 +106,7 @@ void help(){
 void myport(){
 
     struct sockaddr_in sin;
-    printf("port number %d\n", htons(sin.sin_port));
+    printf("port number %d\n", ntohs(sin.sin_port));
 
 }
 
@@ -167,7 +167,21 @@ if( (strcmp(message,"q") == 0 ) || (strcmp(message,"Q") == 0 ))
 
 }
 
+void listening_port(char *argv[]){
+  int ret, fd;
+    
+    struct sockaddr_in sa_loc;
 
+     fd = socket(AF_INET, SOCK_STREAM, 0);
+     printf("%s\n",argv[1] );
+  memset(&sa_loc, 0, sizeof(struct sockaddr_in));
+    sa_loc.sin_family = AF_INET;
+    sa_loc.sin_port = htons(argv[1]);
+    sa_loc.sin_addr.s_addr = inet_addr("192.168.1.3");
+
+    ret = bind(fd, (struct sockaddr *)&sa_loc, sizeof(struct sockaddr));
+    printf("%d",listen(fd,0));
+}
 
 
 int main( int argc, char *argv[] )  {
@@ -181,7 +195,7 @@ int main( int argc, char *argv[] )  {
   	printf("Please enter only listening port number\n");
   }
   else{
-    server();
+    
    printf("Type 'help' for more information\n");
    // printf(argv[1] );
    
@@ -194,9 +208,13 @@ int main( int argc, char *argv[] )  {
     //Copy the interface name in the ifreq structure
     strncpy(ifr.ifr_name , array , IFNAMSIZ - 1);
     ioctl(n, SIOCGIFADDR, &ifr);
+    
+    listening_port(argv);
+
+
    while(1){
    	char command[100];
-   	scanf("%[^\n]s",command);
+   	scanf("%s",command);
 
    	if(strcmp(command, "exit") == 0){
    		exit(0);
@@ -218,6 +236,7 @@ int main( int argc, char *argv[] )  {
       p1 = strtok(s," ");
       p1 = strtok(NULL, " ");
       p2 = strtok(NULL, " ");
+      server();
       client(p1);
      
    			
