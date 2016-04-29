@@ -279,7 +279,9 @@ int main( int argc, char *argv[] )  {
     memcpy(&server_addr.sin_addr,ptrh->h_addr,ptrh->h_length);
 
     if( -1 == (connect(clientSocket, (struct sockaddr*)&server_addr, sizeof(server_addr)))) 
-    { printf("\nServer Not Ready !!\n"); }
+    { 
+      printf("\nServer Not Ready !!\n");
+    }
 
    	}
    	// else if(strcmp(command, "list") == 0){
