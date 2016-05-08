@@ -186,7 +186,13 @@ void listening_port(char *argv[]){
 
 
 int main( int argc, char *argv[] )  {
-  int n = 0;
+  int n = 0,activity;
+  int max_sd,new_socket;
+  fd_set readfds;
+  struct sockaddr_in address;
+ 
+
+
 
   if(argc != 2){
    printf("Please enter the listening port number\n");
@@ -199,6 +205,8 @@ int main( int argc, char *argv[] )  {
     
    printf("Type 'help' for more information\n");
    // printf(argv[1] );
+
+
    
    struct ifreq ifr;
     char array[] = "en1";
@@ -211,10 +219,16 @@ int main( int argc, char *argv[] )  {
     ioctl(n, SIOCGIFADDR, &ifr);
     
     listening_port(argv);
-
+    close(n);
 
    while(1){
    	char command[100];
+
+    FD_ZERO(&readfds);
+
+    FD_SET(max_sd, &readfds);
+
+    activity = select( max_sd + 1 , &readfds , NULL , NULL , NULL);
     
     // scanf("%s", &command);
     char cmd[100],arg1[100];
@@ -224,78 +238,81 @@ int main( int argc, char *argv[] )  {
 
    // fgets(command,sizeof(command),stdin);
     //sscanf(command, "%[\n]", command);
+    if (FD_ISSET(max_sd, &readfds)) {
+
+      printf("New connection , socket fd is %d , ip is : %s , port : %d \n" , new_socket , inet_ntoa(address.sin_addr) , ntohs(address.sin_port));
+
+     	if(strcmp(cmd, "exit") == 0){
+     		exit(0);
+     	}
+     	else if(strcmp(cmd, "help") == 0){
+     		help();
+     	}
+     	else if(strcmp(cmd, "myip") == 0){
+        printf("IP Address is %s\n" , inet_ntoa(( (struct sockaddr_in *)&ifr.ifr_addr )->sin_addr) );
+     		//myip();
+     	}
+     	else if(strcmp(cmd, "myport") == 0){
+     		myport();
+     	}
+      
+     	else if(strcmp(cmd, "connect") == 0){
+         //   int clientid;
+         //  char msgsend[512], msgrecv[512];
+         //  struct sockaddr_in client; 
+
+         //  memset(msgrecv, '0', sizeof(msgrecv));
+         //  clientid = socket(AF_INET, SOCK_STREAM, 0);
+
+         //  client.sin_family = AF_INET;
+         // client.sin_addr.s_addr = inet_addr(arg1);
+         // client.sin_port = htons(arg2);
+
+         // bind(clientid, (struct sockaddr*)&server, sizeof(server));
+       		// if(connect(clientid, (struct sockaddr*)&client, sizeof(client)) <0){
+         //    printf("Connection Failed!");
+         //  }
+        int clientSocket; /* Socket Decriptor for Client */
+        struct sockaddr_in server_addr;
+        struct hostent *ptrh;
+        struct sockaddr_in sin;
+
+        char message[100];
+        char received[100];
+        int n = 0;
+
+        clientSocket=socket(AF_INET, SOCK_STREAM, 0);
+
+        memset((char*)&server_addr, 0, sizeof(server_addr));
+
+        server_addr.sin_family = AF_INET;
+        server_addr.sin_port = htons("64084");
+
+        /*  bind(clientSocket, (struct sockaddr*)&server_addr, sizeof(struct sockaddr)); */
 
 
-   	if(strcmp(cmd, "exit") == 0){
-   		exit(0);
-   	}
-   	else if(strcmp(cmd, "help") == 0){
-   		help();
-   	}
-   	else if(strcmp(cmd, "myip") == 0){
-      printf("IP Address is %s\n" , inet_ntoa(( (struct sockaddr_in *)&ifr.ifr_addr )->sin_addr) );
-   		//myip();
-   	}
-   	else if(strcmp(cmd, "myport") == 0){
-   		myport();
-   	}
-    
-   	else if(strcmp(cmd, "connect") == 0){
-     //   int clientid;
-     //  char msgsend[512], msgrecv[512];
-     //  struct sockaddr_in client; 
+        ptrh=gethostbyname(arg1);
+        memcpy(&server_addr.sin_addr,ptrh->h_addr,ptrh->h_length);
 
-     //  memset(msgrecv, '0', sizeof(msgrecv));
-     //  clientid = socket(AF_INET, SOCK_STREAM, 0);
+        if( -1 == (connect(clientSocket, (struct sockaddr*)&server_addr, sizeof(server_addr)))) 
+        { 
+          printf("\nServer Not Ready !!\n");
+        }
 
-     //  client.sin_family = AF_INET;
-     // client.sin_addr.s_addr = inet_addr(arg1);
-     // client.sin_port = htons(arg2);
-
-     // bind(clientid, (struct sockaddr*)&server, sizeof(server));
-   		// if(connect(clientid, (struct sockaddr*)&client, sizeof(client)) <0){
-     //    printf("Connection Failed!");
-     //  }
-     int clientSocket; /* Socket Decriptor for Client */
-    struct sockaddr_in server_addr;
-    struct hostent *ptrh;
-    struct sockaddr_in sin;
-
-    char message[100];
-    char received[100];
-    int n = 0;
-
-    clientSocket=socket(AF_INET, SOCK_STREAM, 0);
-
-    memset((char*)&server_addr, 0, sizeof(server_addr));
-
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_port = htons("1234");
-
-    /*  bind(clientSocket, (struct sockaddr*)&server_addr, sizeof(struct sockaddr)); */
-
-
-    ptrh=gethostbyname(arg1);
-    memcpy(&server_addr.sin_addr,ptrh->h_addr,ptrh->h_length);
-
-    if( -1 == (connect(clientSocket, (struct sockaddr*)&server_addr, sizeof(server_addr)))) 
-    { 
-      printf("\nServer Not Ready !!\n");
+     	}
+     	// else if(strcmp(command, "list") == 0){
+     	// 	list();
+     	// }
+     	// else if(strcmp(command, "terminate") == 0){
+     	// 	terminater();
+     	// }
+     	// else if(strcmp(command, "send") == 0){
+     	// 	sending();
+     	// }
+     	
     }
-
-   	}
-   	// else if(strcmp(command, "list") == 0){
-   	// 	list();
-   	// }
-   	// else if(strcmp(command, "terminate") == 0){
-   	// 	terminater();
-   	// }
-   	// else if(strcmp(command, "send") == 0){
-   	// 	sending();
-   	// }
-   	
-   }
   }
+}
   
   return 0;
 }
